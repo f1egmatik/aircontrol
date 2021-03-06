@@ -1,3 +1,9 @@
 EESchema-DOCLIB  Version 2.0
 #
+$CMP MH-Z19
+D CO2 sensor MH-Z19
+K CO2 sensor, MH-Z19
+F https://www.winsen-sensor.com/d/files/infrared-gas-sensor/mh-z19b-co2-ver1_0.pdf
+$ENDCMP
+#
 #End Doc Library

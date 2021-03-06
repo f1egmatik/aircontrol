@@ -97,6 +97,39 @@ X ~ 5 -200 300 100 D 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
+# Switch_SW_Push
+#
+DEF Switch_SW_Push SW 0 40 N N 1 F N
+F0 "SW" 50 100 50 H V L CNN
+F1 "Switch_SW_Push" 0 -60 50 H V C CNN
+F2 "" 0 200 50 H I C CNN
+F3 "" 0 200 50 H I C CNN
+DRAW
+C -80 0 20 0 1 0 N
+C 80 0 20 0 1 0 N
+P 2 0 1 0 0 50 0 120 N
+P 2 0 1 0 100 50 -100 50 N
+X 1 1 -200 0 100 R 50 50 0 1 P
+X 2 2 200 0 100 L 50 50 0 1 P
+ENDDRAW
+ENDDEF
+#
+# aircontrol-rescue_MH-Z19
+#
+DEF aircontrol-rescue_MH-Z19 U 0 40 Y Y 1 F N
+F0 "U" 0 275 50 H V C CNN
+F1 "aircontrol-rescue_MH-Z19" 0 200 50 H V C CNN
+F2 "" 0 -200 50 H I C CIN
+F3 "" 0 200 50 H I C CNN
+DRAW
+S -300 150 300 -150 0 1 10 f
+X VIN 1 -400 100 100 R 50 50 1 1 I
+X GND 2 -400 -100 100 R 50 50 1 1 O
+X TX 7 400 -100 100 L 50 50 1 1 w
+X RX 8 400 100 100 L 50 50 1 1 W
+ENDDRAW
+ENDDEF
+#
 # aircontrol-rescue_NodeMCUv3-ESP8266
 #
 DEF aircontrol-rescue_NodeMCUv3-ESP8266 U 0 40 Y Y 1 F N

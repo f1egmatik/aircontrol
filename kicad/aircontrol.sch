@@ -8,16 +8,12 @@ Sheet 1 1
 Title "ESP8266-LolinV3-aircontrol"
 Date "2021-03-02"
 Rev "1.0"
-Comp "@hassio:gazizova.net"
+Comp "#hassio:gazizova.net"
 Comment1 ""
 Comment2 "Azat Gazizov"
 Comment3 ""
 Comment4 ""
 $EndDescr
-Wire Wire Line
-	2400 3050 2900 3050
-Wire Wire Line
-	2400 3150 2900 3150
 Wire Wire Line
 	2400 3250 2900 3250
 Wire Wire Line
@@ -53,10 +49,6 @@ Wire Wire Line
 Wire Wire Line
 	4500 4150 5100 4150
 Wire Wire Line
-	4500 3050 5100 3050
-Wire Wire Line
-	4500 3150 5100 3150
-Wire Wire Line
 	4500 3650 5100 3650
 Wire Wire Line
 	4500 3750 5100 3750
@@ -66,13 +58,11 @@ Wire Wire Line
 	2400 2950 2900 2950
 Wire Wire Line
 	4500 4350 5100 4350
-Wire Wire Line
-	4500 4250 5100 4250
 $Comp
-L aircontrol-rescue:NodeMCUv3-ESP8266 U?
+L aircontrol-rescue:NodeMCUv3-ESP8266 U2
 U 1 1 60401A27
 P 3700 3650
-F 0 "U?" H 3700 4737 60  0000 C CNN
+F 0 "U2" H 3700 4737 60  0000 C CNN
 F 1 "NodeMCUv3-ESP8266" H 3700 4631 60  0000 C CNN
 F 2 "" H 3100 2800 60  0000 C CNN
 F 3 "" H 3100 2800 60  0000 C CNN
@@ -80,10 +70,10 @@ F 3 "" H 3100 2800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:C C?
+L Device:C C1
 U 1 1 604029F8
 P 7050 4100
-F 0 "C?" H 7165 4146 50  0000 L CNN
+F 0 "C1" H 7165 4146 50  0000 L CNN
 F 1 "C" H 7165 4055 50  0000 L CNN
 F 2 "" H 7088 3950 50  0001 C CNN
 F 3 "~" H 7050 4100 50  0001 C CNN
@@ -91,10 +81,10 @@ F 3 "~" H 7050 4100 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:C C?
+L Device:C C2
 U 1 1 60402AE6
 P 6000 4200
-F 0 "C?" H 6115 4246 50  0000 L CNN
+F 0 "C2" H 6115 4246 50  0000 L CNN
 F 1 "C" H 6115 4155 50  0000 L CNN
 F 2 "" H 6038 4050 50  0001 C CNN
 F 3 "~" H 6000 4200 50  0001 C CNN
@@ -102,10 +92,10 @@ F 3 "~" H 6000 4200 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Relay:SANYOU_SRD_Form_C K?
+L Relay:SANYOU_SRD_Form_C K1
 U 1 1 60402FFD
 P 6850 3550
-F 0 "K?" H 7280 3596 50  0000 L CNN
+F 0 "K1" H 7280 3596 50  0000 L CNN
 F 1 "SANYOU_SRD_Form_C" H 7280 3505 50  0000 L CNN
 F 2 "Relay_THT:Relay_SPDT_SANYOU_SRD_Series_Form_C" H 7300 3500 50  0001 L CNN
 F 3 "http://www.sanyourelay.ca/public/products/pdf/SRD.pdf" H 6850 3550 50  0001 C CNN
@@ -113,10 +103,10 @@ F 3 "http://www.sanyourelay.ca/public/products/pdf/SRD.pdf" H 6850 3550 50  0001
 	1    0    0    -1  
 $EndComp
 $Comp
-L Relay:SANYOU_SRD_Form_C K?
+L Relay:SANYOU_SRD_Form_C K2
 U 1 1 6040311E
 P 5800 3650
-F 0 "K?" H 6230 3696 50  0000 L CNN
+F 0 "K2" H 6230 3696 50  0000 L CNN
 F 1 "SANYOU_SRD_Form_C" H 6230 3605 50  0000 L CNN
 F 2 "Relay_THT:Relay_SPDT_SANYOU_SRD_Series_Form_C" H 6250 3600 50  0001 L CNN
 F 3 "http://www.sanyourelay.ca/public/products/pdf/SRD.pdf" H 5800 3650 50  0001 C CNN
@@ -128,10 +118,10 @@ Wire Wire Line
 Wire Wire Line
 	4500 3350 5600 3350
 $Comp
-L Device:R R?
+L Device:R R1
 U 1 1 60409148
 P 7450 4100
-F 0 "R?" H 7520 4146 50  0000 L CNN
+F 0 "R1" H 7520 4146 50  0000 L CNN
 F 1 "R" H 7520 4055 50  0000 L CNN
 F 2 "" V 7380 4100 50  0001 C CNN
 F 3 "~" H 7450 4100 50  0001 C CNN
@@ -139,10 +129,10 @@ F 3 "~" H 7450 4100 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:R R?
+L Device:R R2
 U 1 1 60409274
 P 6350 4200
-F 0 "R?" H 6420 4246 50  0000 L CNN
+F 0 "R2" H 6420 4246 50  0000 L CNN
 F 1 "R" H 6420 4155 50  0000 L CNN
 F 2 "" V 6280 4200 50  0001 C CNN
 F 3 "~" H 6350 4200 50  0001 C CNN
@@ -154,10 +144,10 @@ Wire Wire Line
 Wire Wire Line
 	7450 4250 7050 4250
 $Comp
-L Motor:Motor_AC M?
+L Motor:Motor_AC M1
 U 1 1 6040B545
 P 9850 3600
-F 0 "M?" H 10008 3596 50  0000 L CNN
+F 0 "M1" H 10008 3596 50  0000 L CNN
 F 1 "Motor_AC" H 10008 3505 50  0000 L CNN
 F 2 "" H 9850 3510 50  0001 C CNN
 F 3 "~" H 9850 3510 50  0001 C CNN
@@ -165,10 +155,10 @@ F 3 "~" H 9850 3510 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:AC #PWR?
+L power:AC #PWR01
 U 1 1 6040BA9D
 P 8850 2900
-F 0 "#PWR?" H 8850 2800 50  0001 C CNN
+F 0 "#PWR01" H 8850 2800 50  0001 C CNN
 F 1 "AC" H 8850 3175 50  0000 C CNN
 F 2 "" H 8850 2900 50  0001 C CNN
 F 3 "" H 8850 2900 50  0001 C CNN
@@ -176,10 +166,10 @@ F 3 "" H 8850 2900 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GNDPWR #PWR?
+L power:GNDPWR #PWR02
 U 1 1 6040BB01
 P 8850 3050
-F 0 "#PWR?" H 8850 2850 50  0001 C CNN
+F 0 "#PWR02" H 8850 2850 50  0001 C CNN
 F 1 "GNDPWR" H 8854 2896 50  0000 C CNN
 F 2 "" H 8850 3000 50  0001 C CNN
 F 3 "" H 8850 3000 50  0001 C CNN
@@ -235,4 +225,64 @@ Wire Wire Line
 Connection ~ 5600 4000
 Wire Wire Line
 	5300 3550 5300 4000
+$Comp
+L aircontrol-rescue:MH-Z19 U1
+U 1 1 6043306D
+P 3750 1750
+F 0 "U1" H 3750 2075 50  0000 C CNN
+F 1 "MH-Z19" H 3750 1984 50  0000 C CNN
+F 2 "" H 3750 1550 50  0001 C CIN
+F 3 "https://www.winsen-sensor.com/d/files/infrared-gas-sensor/mh-z19b-co2-ver1_0.pdf" H 3750 1950 50  0001 C CNN
+	1    3750 1750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5250 3050 5250 1850
+Wire Wire Line
+	5250 1850 4150 1850
+Wire Wire Line
+	4500 3050 5250 3050
+Wire Wire Line
+	5350 3150 5350 1650
+Wire Wire Line
+	5350 1650 4150 1650
+Wire Wire Line
+	4500 3150 5350 3150
+Wire Wire Line
+	2300 3050 2300 1850
+Wire Wire Line
+	2300 1850 3350 1850
+Wire Wire Line
+	2300 3050 2900 3050
+Wire Wire Line
+	3350 1650 2200 1650
+Wire Wire Line
+	2200 1650 2200 3150
+Wire Wire Line
+	2200 3150 2900 3150
+$Comp
+L Switch:SW_Push SW1
+U 1 1 604378ED
+P 10500 3650
+F 0 "SW1" V 10454 3798 50  0000 L CNN
+F 1 "SW_Push" V 10545 3798 50  0000 L CNN
+F 2 "" H 10500 3850 50  0001 C CNN
+F 3 "" H 10500 3850 50  0001 C CNN
+	1    10500 3650
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	10500 3450 10500 2500
+Wire Wire Line
+	10500 2500 5100 2500
+Wire Wire Line
+	5100 2500 5100 2950
+Wire Wire Line
+	10500 3850 10500 4450
+Wire Wire Line
+	10500 4450 5300 4450
+Wire Wire Line
+	5300 4450 5300 4250
+Wire Wire Line
+	4500 4250 5300 4250
 $EndSCHEMATC

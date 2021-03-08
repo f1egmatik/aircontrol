@@ -1,0 +1,110 @@
+esphome:
+  name: aircontrol
+  platform: ESP8266
+  board: nodemcuv2
+
+wifi:
+  # Wifi credentials
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Aircontrol Fallback Hotspot"
+    password: "YHhbSejlDaIw"
+
+captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: "esphome"
+
+ota:
+  password: "esphome"
+
+substitutions:
+  # NodeMCU v3 board
+  pin_btn: D0
+  pin_relay_speed1: D3
+  pin_relay_speed2: D4
+
+# Example configuration entry
+uart:
+  rx_pin: D1
+  tx_pin: D2
+  baud_rate: 9600
+
+sensor:
+  - platform: mhz19
+    co2:
+      name: "MH-Z19 CO2 Value"
+    temperature:
+      name: "MH-Z19 Temperature"
+    update_interval: 60s
+    automatic_baseline_calibration: false
+
+output:
+  # Relay speed1
+  - platform: gpio
+    id: relay_speed1
+    pin:
+      number: $pin_relay_speed1
+      mode: OUTPUT
+      inverted: true
+
+  # Relay speed2
+  - platform: gpio
+    id: relay_speed2
+    pin:
+      number: $pin_relay_speed2
+      mode: OUTPUT
+      inverted: true
+
+switch:
+  # Speed1
+  - platform: template
+    name: "speed1"
+    id: speed1
+    icon: "mdi:door-open"
+    optimistic: true
+    restore_state: true
+    on_turn_on:
+      output.turn_on: relay_speed1
+    on_turn_off:
+      output.turn_off: relay_speed1
+
+  - platform: template
+    name: "speed2"
+    id: speed2
+    icon: "mdi:door-open"
+    optimistic: true
+    restore_state: true
+    on_turn_on:
+      output.turn_on: relay_speed2
+    on_turn_off:
+      output.turn_off: relay_speed2
+
+binary_sensor:
+  # Call detection
+  - platform: gpio
+    name: "Fan Hardware Switch"
+    id: airconrol_hardswitch
+    pin:
+      number: $pin_btn
+      mode: INPUT_PULLUP
+      inverted: True
+    filters:
+      - delayed_off: 25ms
+      - delayed_on: 25ms
+    on_press:
+      then:
+        - switch.turn_on: speed1
+        - switch.turn_on: speed2
+    on_release:
+      then:
+        - switch.turn_off: speed1
+        - switch.turn_off: speed2
+

@@ -46,6 +46,26 @@ sensor:
     update_interval: 60s
     automatic_baseline_calibration: false
 
+web_server:
+  port: 80
+
+#sensor_dht:
+#  - platform: dht
+#    pin: D2
+#    model: AM2302
+#    temperature:
+#      name: "ESPHome Temperature"
+#      id: dht_temp
+#    humidity:
+#      name: "ESPHome Humidity"
+#      id: dht_hum
+#    update_interval: 1s
+    
+text_sensor:
+  - platform: template
+    name: "Скорость вентилятора"
+    id: fanspeed
+
 output:
   # Relay speed1
   - platform: gpio
@@ -63,11 +83,196 @@ output:
       mode: OUTPUT
       inverted: true
 
-switch:
-  # Speed1
+  # 
   - platform: template
-    name: "speed1"
-    id: speed1
+    type: float
+    id: fan_speed
+
+    write_action:
+      - if:
+          condition:
+            lambda: return (state < .2);
+          then:
+            - output.turn_off: relay_speed1
+            - output.turn_off: relay_speed2
+      - if:
+          condition:
+            lambda: return ((state >= .2) && (state < .4));
+          then:
+            - output.turn_on: relay_speed1
+            - output.turn_off: relay_speed2
+      - if:
+          condition:
+            lambda: return ((state >= .4) && (state < .7));
+          then:
+            - output.turn_off: relay_speed1
+            - output.turn_on: relay_speed2
+      - if:
+          condition:
+            lambda: return (state >= 0.7);
+          then:
+            - output.turn_on: relay_speed1
+            - output.turn_on: relay_speed2
+script:
+  # Вентилятор выключен
+  - id: fan_auto_state_off
+    then:
+      - if:
+          condition:
+            - script.is_running: timeout30min
+          then:
+            - delay: 20ms
+          else:
+            - fan.turn_off: fan_kitchen
+            - lambda: |-
+                id(fanspeed).publish_state("0");
+  # Первая скорость
+  - id: fan_auto_state_1
+    then:
+      - if:
+          condition:
+            - script.is_running: timeout30min
+          then:
+            - delay: 20ms
+          else:
+            - fan.turn_on:
+                id: fan_kitchen
+                speed: LOW
+            - lambda: |-
+                id(fanspeed).publish_state("1");
+
+  # Втарая скорость
+  - id: fan_auto_state_2
+    then:
+      - if:
+          condition:
+            - script.is_running: timeout30min
+          then:
+            - delay: 20ms
+          else:
+            - fan.turn_on:
+                id: fan_kitchen
+                speed: MEDIUM
+            - lambda: |-
+                id(fanspeed).publish_state("2");
+
+  # Третья скорость
+  - id: fan_auto_state_3
+    then:
+      - if:
+          condition:
+            - script.is_running: timeout30min
+          then:
+            - delay: 20ms
+          else:
+            - fan.turn_on:
+                id: fan_kitchen
+                speed: HIGH
+            - lambda: |-
+                id(fanspeed).publish_state("3");
+
+  # ВКЛ 30 минут
+  - id: fan_manual_state_on
+    then:
+      - if:
+          condition:
+            - script.is_running: timeout30min
+          then:
+            - script.stop: timeout30min
+      - fan.turn_on:
+          id: fan_kitchen
+          speed: HIGH
+      - lambda: |-
+          id(fanspeed).publish_state("3");
+      - script.execute: timeout30min
+
+  # ВЫКЛ 30 минут
+  - id: fan_manual_state_off
+    then:
+      - if:
+          condition:
+            - script.is_running: timeout30min
+          then:
+            - script.stop: timeout30min
+      - fan.turn_off: fan_kitchen
+      - lambda: |-
+          id(fanspeed).publish_state("0");
+      - script.execute: timeout30min
+
+  # Таймер 30 минут
+  - id: timeout30min
+    then:
+      - delay: 20sec
+
+# Обновление данных с датчика
+interval:
+  - interval: 3sec
+    then:
+      - if:
+          condition:
+            sensor.in_range:
+              id: dht_hum
+              below: 50
+          then:
+            - script.execute: fan_auto_state_off
+      - if:
+          condition:
+            sensor.in_range:
+              id: dht_hum
+              above: 50
+              below: 70
+          then:
+            - script.execute: fan_auto_state_1
+      - if:
+          condition:
+            sensor.in_range:
+              id: dht_hum
+              above: 70
+              below: 90
+          then:
+            - script.execute: fan_auto_state_2
+      - if:
+          condition:
+            sensor.in_range:
+              id: dht_hum
+              above: 90
+          then:
+            - script.execute: fan_auto_state_3
+
+# Объект - Вентилятор
+fan:
+  - platform: speed
+    output: fan_speed
+    id: fan_kitchen
+    name: "Вытяжка"
+
+binary_sensor:
+  # Шнурок вентилятора
+  - platform: gpio
+    name: "Шнурок вентилятора"
+    id: fan_switch
+    id: airconrol_hardswitch
+    device_class: lock
+    pin:
+      number: $pin_btn
+      mode: INPUT_PULLUP
+      inverted: True
+    filters:
+      delayed_on: 25ms
+    on_press:
+      then:
+        - script.execute: fan_manual_state_on
+    on_release:
+      then:
+        - script.execute: fan_manual_state_off
+
+----
+    
+switch:
+  # Вкючить-выключить из HA не текстовой переменной, а переключателем (для голосовых команд).  
+  - platform: template
+    name: "AirControl Fan"
+    id: aircontrol_fan
     icon: "mdi:door-open"
     optimistic: true
     restore_state: true
@@ -75,36 +280,4 @@ switch:
       output.turn_on: relay_speed1
     on_turn_off:
       output.turn_off: relay_speed1
-
-  - platform: template
-    name: "speed2"
-    id: speed2
-    icon: "mdi:door-open"
-    optimistic: true
-    restore_state: true
-    on_turn_on:
-      output.turn_on: relay_speed2
-    on_turn_off:
-      output.turn_off: relay_speed2
-
-binary_sensor:
-  # Call detection
-  - platform: gpio
-    name: "Fan Hardware Switch"
-    id: airconrol_hardswitch
-    pin:
-      number: $pin_btn
-      mode: INPUT_PULLUP
-      inverted: True
-    filters:
-      - delayed_off: 25ms
-      - delayed_on: 25ms
-    on_press:
-      then:
-        - switch.turn_on: speed1
-        - switch.turn_on: speed2
-    on_release:
-      then:
-        - switch.turn_off: speed1
-        - switch.turn_off: speed2
 

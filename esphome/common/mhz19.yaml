@@ -1,0 +1,32 @@
+substitutions:
+  fan_id: new_fan
+  fan_switch_id: blow_switch
+  
+  pin_btn: D0
+  pin_relay1: D3
+  pin_relay2: D4
+  
+  fan_turn_off_speed: '590'
+  fan_speed_1_above: '610'
+  fan_speed_1_below: '1190'
+  fan_speed_2_above: '1210'
+  fan_speed_2_below: '1790'
+  fan_speed_3_above: '1810'
+  
+  
+uart:
+  rx_pin: D1
+  tx_pin: D2
+  baud_rate: 9600
+  
+  
+sensor:
+  - platform: mhz19
+    co2:
+      name: "CO2 Value"
+      id: mhz19_co2
+    temperature:
+      name: "Temperature"
+      id: mhz19_temp
+    update_interval: 1min
+    automatic_baseline_calibration: false

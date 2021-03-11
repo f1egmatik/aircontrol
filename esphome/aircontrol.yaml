@@ -4,172 +4,168 @@ esphome:
   board: nodemcuv2
 
 wifi:
-  # Wifi credentials
+  # Учетные данные Wi-Fi
   ssid: !secret wifi_ssid
   password: !secret wifi_password
 
-  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  # Включение резервной точки доступа (captive portal) на случай сбоя подключения к Wi-Fi
   ap:
     ssid: "Aircontrol Fallback Hotspot"
     password: "YHhbSejlDaIw"
 
 captive_portal:
 
-# Enable logging
+# Раскомментируйте строки ниже, для включения встроенного WEB-сервера
+#web_server:
+#  port: 80
+
+# Включение ведения журнала
 logger:
 
-# Enable Home Assistant API
+# Включение Home Assistant API
 api:
   password: "esphome"
 
 ota:
   password: "esphome"
 
-substitutions:
-  # NodeMCU v3 board
-  pin_btn: D0
-  pin_relay_speed1: D3
-  pin_relay_speed2: D4
 
-# Example configuration entry
-uart:
-  rx_pin: D1
-  tx_pin: D2
-  baud_rate: 9600
+# Выбор подключенного датчика
+# Раскомментируйте необходимую строку
+#
+<<: !include common/mhz19.yaml
+#<<: !include common/dht_am2302.yaml
 
-sensor:
-  - platform: mhz19
-    co2:
-      name: "MH-Z19 CO2 Value"
-    temperature:
-      name: "MH-Z19 Temperature"
-    update_interval: 60s
-    automatic_baseline_calibration: false
 
-web_server:
-  port: 80
-
-#sensor_dht:
-#  - platform: dht
-#    pin: D2
-#    model: AM2302
-#    temperature:
-#      name: "ESPHome Temperature"
-#      id: dht_temp
-#    humidity:
-#      name: "ESPHome Humidity"
-#      id: dht_hum
-#    update_interval: 1s
-    
+# Не обязательный текстовый сенсор, отображает текущий режим работы вентилятора
 text_sensor:
   - platform: template
-    name: "Скорость вентилятора"
+    name: "Fan speed"
     id: fanspeed
+    icon: "mdi:fan"
 
+
+# Настройки выходов
 output:
-  # Relay speed1
+  # Выход Реле 1
   - platform: gpio
-    id: relay_speed1
+    id: relay_1
     pin:
-      number: $pin_relay_speed1
+      number: $pin_relay1
       mode: OUTPUT
       inverted: true
 
-  # Relay speed2
+  # Выход Реле 2
   - platform: gpio
-    id: relay_speed2
+    id: relay_2
     pin:
-      number: $pin_relay_speed2
+      number: $pin_relay2
       mode: OUTPUT
       inverted: true
 
-  # 
+  # Фиктивный выход для переключения скоростей вентилятора
   - platform: template
     type: float
     id: fan_speed
-
     write_action:
       - if:
           condition:
             lambda: return (state < .2);
           then:
-            - output.turn_off: relay_speed1
-            - output.turn_off: relay_speed2
+            - output.turn_off: relay_1
+            - output.turn_off: relay_2
+            - lambda: |-
+                id(fanspeed).publish_state("0");
       - if:
           condition:
             lambda: return ((state >= .2) && (state < .4));
           then:
-            - output.turn_on: relay_speed1
-            - output.turn_off: relay_speed2
+            - output.turn_on: relay_1
+            - output.turn_off: relay_2
+            - lambda: |-
+                id(fanspeed).publish_state("1");
       - if:
           condition:
             lambda: return ((state >= .4) && (state < .7));
           then:
-            - output.turn_off: relay_speed1
-            - output.turn_on: relay_speed2
+            - output.turn_off: relay_1
+            - output.turn_on: relay_2
+            - lambda: |-
+                id(fanspeed).publish_state("2");
       - if:
           condition:
             lambda: return (state >= 0.7);
           then:
-            - output.turn_on: relay_speed1
-            - output.turn_on: relay_speed2
+            - output.turn_on: relay_1
+            - output.turn_on: relay_2
+            - lambda: |-
+                id(fanspeed).publish_state("3");
+
+
+# Скрипты автоматизации
 script:
+
   # Вентилятор выключен
   - id: fan_auto_state_off
     then:
       - if:
           condition:
-            - script.is_running: timeout30min
+            switch.is_off: hass_control
           then:
-            - delay: 20ms
-          else:
-            - fan.turn_off: fan_kitchen
-            - lambda: |-
-                id(fanspeed).publish_state("0");
+            - if:
+                condition:
+                  - script.is_running: timeout30min
+                then:
+                  - delay: 20ms
+                else:
+                  - fan.turn_off: $fan_id
+      
   # Первая скорость
   - id: fan_auto_state_1
     then:
       - if:
           condition:
-            - script.is_running: timeout30min
+            switch.is_off: hass_control
           then:
-            - delay: 20ms
-          else:
-            - fan.turn_on:
-                id: fan_kitchen
-                speed: LOW
-            - lambda: |-
-                id(fanspeed).publish_state("1");
+            - if:
+                condition:
+                  - script.is_running: timeout30min
+                then:
+                  - delay: 20ms
+                else:
+                  - fan.turn_on:
+                      id: $fan_id
+                      speed: LOW
+                  - lambda: |-
+                      id(fanspeed).publish_state("1");
 
   # Втарая скорость
   - id: fan_auto_state_2
     then:
       - if:
           condition:
-            - script.is_running: timeout30min
+            switch.is_off: hass_control
           then:
-            - delay: 20ms
-          else:
-            - fan.turn_on:
-                id: fan_kitchen
-                speed: MEDIUM
-            - lambda: |-
-                id(fanspeed).publish_state("2");
+            - if:
+                condition:
+                  - script.is_running: timeout30min
+                then:
+                  - delay: 20ms
+                else:
+                  - fan.turn_on:
+                      id: $fan_id
+                      speed: MEDIUM
 
   # Третья скорость
   - id: fan_auto_state_3
     then:
-      - if:
-          condition:
-            - script.is_running: timeout30min
-          then:
-            - delay: 20ms
-          else:
-            - fan.turn_on:
-                id: fan_kitchen
-                speed: HIGH
-            - lambda: |-
-                id(fanspeed).publish_state("3");
+      - switch.template.publish:
+          id: hass_control
+          state: OFF
+      - fan.turn_on:
+          id: $fan_id
+          speed: HIGH
+            
 
   # ВКЛ 30 минут
   - id: fan_manual_state_on
@@ -179,11 +175,12 @@ script:
             - script.is_running: timeout30min
           then:
             - script.stop: timeout30min
+      - switch.template.publish:
+          id: hass_control
+          state: OFF
       - fan.turn_on:
-          id: fan_kitchen
+          id: $fan_id
           speed: HIGH
-      - lambda: |-
-          id(fanspeed).publish_state("3");
       - script.execute: timeout30min
 
   # ВЫКЛ 30 минут
@@ -194,65 +191,84 @@ script:
             - script.is_running: timeout30min
           then:
             - script.stop: timeout30min
-      - fan.turn_off: fan_kitchen
-      - lambda: |-
-          id(fanspeed).publish_state("0");
+      - switch.template.publish:
+          id: hass_control
+          state: OFF
+      - fan.turn_off: $fan_id
       - script.execute: timeout30min
 
   # Таймер 30 минут
   - id: timeout30min
     then:
-      - delay: 20sec
+      - delay: 30min
 
-# Обновление данных с датчика
+
+# Выполнение скриптов по условиям 
 interval:
   - interval: 3sec
     then:
       - if:
           condition:
             sensor.in_range:
-              id: dht_hum
-              below: 50
+              id: mhz19_co2 
+              below: $fan_turn_off_speed
           then:
             - script.execute: fan_auto_state_off
       - if:
           condition:
             sensor.in_range:
-              id: dht_hum
-              above: 50
-              below: 70
+              id: mhz19_co2
+              above: $fan_speed_1_above
+              below: $fan_speed_1_below
           then:
             - script.execute: fan_auto_state_1
       - if:
           condition:
             sensor.in_range:
-              id: dht_hum
-              above: 70
-              below: 90
+              id: mhz19_co2
+              above: $fan_speed_2_above
+              below: $fan_speed_2_below
           then:
             - script.execute: fan_auto_state_2
       - if:
           condition:
             sensor.in_range:
-              id: dht_hum
-              above: 90
+              id: mhz19_co2
+              above: $fan_speed_3_above
           then:
+            - switch.template.publish:
+                id: hass_control
+                state: OFF
             - script.execute: fan_auto_state_3
 
-# Объект - Вентилятор
-fan:
-  - platform: speed
-    output: fan_speed
-    id: fan_kitchen
-    name: "Вытяжка"
+
+switch:
+  # Переключатель ручного управления
+  - platform: template
+    id: hass_control
+    name: "Manual mode"
+    turn_on_action:
+      - switch.template.publish:
+          id: hass_control
+          state: ON
+    turn_off_action:
+      - switch.template.publish:
+          id: hass_control
+          state: OFF
+      - script.stop: timeout30min
+      
+  - platform: template
+    id: blow
+    name: "Blow"
+    turn_on_action:
+      - script.execute: fan_manual_state_on
+
 
 binary_sensor:
-  # Шнурок вентилятора
+  # переключатель на вентиляторе
   - platform: gpio
-    name: "Шнурок вентилятора"
-    id: fan_switch
-    id: airconrol_hardswitch
-    device_class: lock
+    name: "Fan switch"
+    id: $fan_switch_id
     pin:
       number: $pin_btn
       mode: INPUT_PULLUP
@@ -266,18 +282,26 @@ binary_sensor:
       then:
         - script.execute: fan_manual_state_off
 
-----
-    
-switch:
-  # Вкючить-выключить из HA не текстовой переменной, а переключателем (для голосовых команд).  
-  - platform: template
-    name: "AirControl Fan"
-    id: aircontrol_fan
-    icon: "mdi:door-open"
-    optimistic: true
-    restore_state: true
-    on_turn_on:
-      output.turn_on: relay_speed1
-    on_turn_off:
-      output.turn_off: relay_speed1
 
+#Вентилятор
+fan:
+  - platform: speed
+    output: fan_speed
+    id: $fan_id
+    name: "Fan"
+
+
+#----
+#    
+#switch:
+#  # Вкючить-выключить из HA не текстовой переменной, а переключателем (для голосовых команд).  
+#  - platform: template
+#    name: "AirControl Fan"
+#    id: aircontrol_fan
+#    icon: "mdi:door-open"
+#    optimistic: true
+#    restore_state: true
+#    on_turn_on:
+#      output.turn_on: relay1
+#    on_turn_off:
+#      output.turn_off: relay1

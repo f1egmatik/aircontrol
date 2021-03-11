@@ -1,0 +1,29 @@
+substitutions:
+  fan_id: new_fan
+  fan_switch_id: blow_switch
+
+  pin_btn: D0
+  pin_relay1: D3
+  pin_relay2: D4
+
+  fan_turn_off_speed: '48'
+  fan_speed_1_above: '52'
+  fan_speed_1_below: '68'
+  fan_speed_2_above: '72'
+  fan_speed_2_below: '88'
+  fan_speed_3_above: '92'
+
+
+sensor:
+  - platform: dht
+    # Пин data датчика
+    pin: D5
+    model: AM2302
+    temperature:
+      name: "Temperature"
+      id: dht_temp
+    humidity:
+      name: "Humidity"
+      id: dht_hum
+    update_interval: 1min
+    

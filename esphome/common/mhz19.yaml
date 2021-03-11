@@ -2,6 +2,8 @@ substitutions:
   fan_id: new_fan
   fan_switch_id: blow_switch
   
+  source_sensor_id: mhz19_co2
+  
   pin_btn: D0
   pin_relay1: D3
   pin_relay2: D4
@@ -24,7 +26,7 @@ sensor:
   - platform: mhz19
     co2:
       name: "CO2 Value"
-      id: mhz19_co2
+      id: $source_sensor_id
     temperature:
       name: "Temperature"
       id: mhz19_temp

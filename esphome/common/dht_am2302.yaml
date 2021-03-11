@@ -1,6 +1,8 @@
 substitutions:
   fan_id: new_fan
   fan_switch_id: blow_switch
+  
+  source_sensor_id: dht_hum
 
   pin_btn: D0
   pin_relay1: D3
@@ -24,6 +26,6 @@ sensor:
       id: dht_temp
     humidity:
       name: "Humidity"
-      id: dht_hum
+      id: $source_sensor_id
     update_interval: 1min
     

@@ -2,6 +2,9 @@ esphome:
   name: aircontrol
   platform: ESP8266
   board: nodemcuv2
+  on_boot:
+    then:
+      - switch.turn_on: autocontrol_sw
 
 wifi:
   # Учетные данные Wi-Fi
@@ -110,7 +113,7 @@ script:
     then:
       - if:
           condition:
-            switch.is_off: hass_control
+            switch.is_on: autocontrol_sw
           then:
             - if:
                 condition:
@@ -125,7 +128,7 @@ script:
     then:
       - if:
           condition:
-            switch.is_off: hass_control
+            switch.is_on: autocontrol_sw
           then:
             - if:
                 condition:
@@ -144,7 +147,7 @@ script:
     then:
       - if:
           condition:
-            switch.is_off: hass_control
+            switch.is_on: autocontrol_sw
           then:
             - if:
                 condition:
@@ -160,8 +163,8 @@ script:
   - id: fan_auto_state_3
     then:
       - switch.template.publish:
-          id: hass_control
-          state: OFF
+          id: autocontrol_sw
+          state: ON
       - fan.turn_on:
           id: $fan_id
           speed: HIGH
@@ -176,8 +179,8 @@ script:
           then:
             - script.stop: timeout30min
       - switch.template.publish:
-          id: hass_control
-          state: OFF
+          id: autocontrol_sw
+          state: ON
       - fan.turn_on:
           id: $fan_id
           speed: HIGH
@@ -192,8 +195,8 @@ script:
           then:
             - script.stop: timeout30min
       - switch.template.publish:
-          id: hass_control
-          state: OFF
+          id: autocontrol_sw
+          state: ON
       - fan.turn_off: $fan_id
       - script.execute: timeout30min
 
@@ -237,7 +240,7 @@ interval:
               above: $fan_speed_3_above
           then:
             - switch.template.publish:
-                id: hass_control
+                id: autocontrol_sw
                 state: OFF
             - script.execute: fan_auto_state_3
 
@@ -245,27 +248,30 @@ interval:
 switch:
   # Переключатель ручного управления
   - platform: template
-    id: hass_control
-    name: "Manual mode"
+    id: autocontrol_sw
+    name: "Autocontrol"
+    icon: "mdi:fan-auto"
     turn_on_action:
       - switch.template.publish:
-          id: hass_control
+          id: autocontrol_sw
           state: ON
+      - script.stop: timeout30min
     turn_off_action:
       - switch.template.publish:
-          id: hass_control
+          id: autocontrol_sw
           state: OFF
-      - script.stop: timeout30min
-      
+          
+  # Переключатель режима продувки
   - platform: template
     id: blow
     name: "Blow"
+    icon: "mdi:fan-speed-3"
     turn_on_action:
       - script.execute: fan_manual_state_on
 
 
 binary_sensor:
-  # переключатель на вентиляторе
+  # Физический переключатель на вентиляторе
   - platform: gpio
     name: "Fan switch"
     id: $fan_switch_id

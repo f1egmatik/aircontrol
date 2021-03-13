@@ -4,7 +4,7 @@ substitutions:
   
   source_sensor_id: dht_hum
 
-  pin_btn: D0
+  pin_btn: D6
   pin_relay1: D3
   pin_relay2: D4
 

@@ -4,9 +4,9 @@ substitutions:
   
   source_sensor_id: mhz19_co2
   
-  pin_btn: D6
-  pin_relay1: D3
-  pin_relay2: D4
+  pin_btn: D5
+  pin_relay1: D6
+  pin_relay2: D7
   
   fan_turn_off_speed: '590'
   fan_speed_1_above: '610'

@@ -38,8 +38,8 @@ ota:
 # Выбор подключенного датчика
 # Раскомментируйте необходимую строку
 #
-#<<: !include common/mhz19.yaml
-<<: !include common/dht_am2302.yaml
+<<: !include common/mhz19.yaml
+#<<: !include common/dht_am2302.yaml
 
 
 # Не обязательный текстовый сенсор, отображает текущий режим работы вентилятора

@@ -216,7 +216,7 @@ script:
 
 # Выполнение скриптов по условиям 
 interval:
-  - interval: 30s
+  - interval: 1s
     then:
       - if:
           condition:
@@ -229,7 +229,7 @@ interval:
                 condition:
                   sensor.in_range:
                     id: $source_sensor_id
-                    below: $fan_speed_1_above
+                    below: $fan_speed_1
                 then:
                   - script.execute: fan_auto_state_off
                 else:
@@ -237,19 +237,19 @@ interval:
                       condition:
                         sensor.in_range:
                           id: $source_sensor_id
-                          above: $fan_speed_1_above
+                          above: $fan_speed_3
                       then:
-                        - script.execute: fan_auto_state_1
+                        - script.execute: fan_auto_state_3
                       else:
                         - if:
                             condition:
                               sensor.in_range:
                                 id: $source_sensor_id
-                                above: $fan_speed_2_above
+                                above: $fan_speed_2
                             then:
                               - script.execute: fan_auto_state_2
                             else:
-                              - script.execute: fan_auto_state_3
+                              - script.execute: fan_auto_state_1
       
       
 

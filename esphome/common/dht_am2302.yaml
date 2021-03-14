@@ -3,6 +3,8 @@ substitutions:
   fan_switch_id: blow_switch
   
   source_sensor_id: dht_hum
+  
+  blow_timeout: 30min
 
   pin_btn: D5
   pin_relay1: D6

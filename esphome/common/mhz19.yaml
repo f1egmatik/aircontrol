@@ -4,6 +4,8 @@ substitutions:
   
   source_sensor_id: mhz19_co2
   
+  blow_timeout: 30min
+  
   pin_btn: D5
   pin_relay1: D6
   pin_relay2: D7

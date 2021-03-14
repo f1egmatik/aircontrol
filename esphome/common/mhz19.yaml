@@ -17,8 +17,8 @@ substitutions:
   
   
 uart:
-  rx_pin: D1
-  tx_pin: D2
+  rx_pin: RX
+  tx_pin: TX
   baud_rate: 9600
   
   

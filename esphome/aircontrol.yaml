@@ -208,10 +208,10 @@ script:
       - fan.turn_off: $fan_id
       - script.execute: timeout
 
-  # Таймер 30 минут
+  # Таймер
   - id: timeout
     then:
-      - delay: 30min
+      - delay: $blow_timeout
 
 
 # Выполнение скриптов по условиям 

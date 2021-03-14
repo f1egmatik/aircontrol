@@ -8,9 +8,9 @@ substitutions:
   pin_relay1: D6
   pin_relay2: D7
   
-  fan_speed_1_above: '600'
-  fan_speed_2_above: '1200'
-  fan_speed_3_above: '1800'
+  fan_speed_1: '600'
+  fan_speed_2: '1200'
+  fan_speed_3: '1800'
   
   
 uart:

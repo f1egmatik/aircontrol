@@ -8,9 +8,9 @@ substitutions:
   pin_relay1: D6
   pin_relay2: D7
 
-  fan_speed_1_above: '50'
-  fan_speed_2_above: '70'
-  fan_speed_3_above: '90'
+  fan_speed_1: '50'
+  fan_speed_2: '70'
+  fan_speed_3: '90'
 
 
 sensor:

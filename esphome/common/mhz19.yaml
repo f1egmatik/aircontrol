@@ -28,6 +28,6 @@ sensor:
       id: $source_sensor_id
     temperature:
       name: "Temperature"
-      id: mhz19_temp
+      id: $source_sensor_id
     update_interval: 1min
     automatic_baseline_calibration: false

@@ -221,7 +221,7 @@ interval:
           condition:
             and:
               not:
-                - switch.is_on: autocontrol_sw
+                - switch.is_off: autocontrol_sw
                 - script.is_running: timeout
           then:
             - if:

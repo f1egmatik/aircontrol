@@ -1,0 +1,21 @@
+substitutions:
+  fan_id: new_fan
+  fan_switch_id: blow_switch
+  
+  source_sensor_id: hass_humidity
+  
+  blow_timeout: 30min
+  
+  pin_btn: D5
+  pin_relay1: D6
+  pin_relay2: D7
+  
+  fan_speed_1: '50'
+  fan_speed_2: '70'
+  fan_speed_3: '90'
+
+sensor:
+  - platform: homeassistant
+    name: "Humidity Sensor"
+    entity_id: sensor.humidity_2
+    id: $source_sensor_id

@@ -17,5 +17,6 @@ substitutions:
 sensor:
   - platform: homeassistant
     name: "Humidity Sensor"
+    # `sensor.humidity_2` замените на ваш датчик из Home Assistant
     entity_id: sensor.humidity_2
     id: $source_sensor_id

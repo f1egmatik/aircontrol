@@ -20,3 +20,6 @@ sensor:
     # `sensor.humidity_2` замените на ваш датчик из Home Assistant
     entity_id: sensor.humidity_2
     id: $source_sensor_id
+    on_value:
+      then:
+        - script.execute: fan_automation

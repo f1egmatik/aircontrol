@@ -109,6 +109,42 @@ output:
 # Скрипты автоматизации
 script:
 
+  # Логика автоматизации
+  - id: fan_automation
+    then:
+      - if:
+          condition:
+            and:
+              not:
+                - switch.is_off: autocontrol_sw
+                - script.is_running: timeout
+          then:
+            - if:
+                condition:
+                  sensor.in_range:
+                    id: $source_sensor_id
+                    below: $fan_speed_1
+                then:
+                  - script.execute: fan_auto_state_off
+                else:
+                  - if:
+                      condition:
+                        sensor.in_range:
+                          id: $source_sensor_id
+                          above: $fan_speed_3
+                      then:
+                        - script.execute: fan_auto_state_3
+                      else:
+                        - if:
+                            condition:
+                              sensor.in_range:
+                                id: $source_sensor_id
+                                above: $fan_speed_2
+                            then:
+                              - script.execute: fan_auto_state_2
+                            else:
+                              - script.execute: fan_auto_state_1
+ 
   # Вентилятор выключен
   - id: fan_auto_state_off
     then:
@@ -132,15 +168,12 @@ script:
           then:
             - if:
                 condition:
-                  - script.is_running: timeout
+                  not:
+                    - script.is_running: timeout
                 then:
-                  - delay: 20ms
-                else:
                   - fan.turn_on:
                       id: $fan_id
                       speed: LOW
-                  - lambda: |-
-                      id(fanspeed).publish_state("1");
 
   # Втарая скорость
   - id: fan_auto_state_2
@@ -151,10 +184,9 @@ script:
           then:
             - if:
                 condition:
-                  - script.is_running: timeout
+                  not:
+                    - script.is_running: timeout
                 then:
-                  - delay: 20ms
-                else:
                   - fan.turn_on:
                       id: $fan_id
                       speed: MEDIUM
@@ -168,15 +200,13 @@ script:
           then:
             - if:
                 condition:
-                  - script.is_running: timeout
+                  not:
+                    - script.is_running: timeout
                 then:
-                  - delay: 20ms
-                else:
                   - fan.turn_on:
                       id: $fan_id
                       speed: HIGH
             
-
   # ВКЛ 30 минут
   - id: fan_manual_state_on
     then:
@@ -211,46 +241,6 @@ script:
   - id: timeout
     then:
       - delay: $blow_timeout
-
-
-# Выполнение скриптов по условиям 
-interval:
-  - interval: 1s
-    then:
-      - if:
-          condition:
-            and:
-              not:
-                - switch.is_off: autocontrol_sw
-                - script.is_running: timeout
-          then:
-            - if:
-                condition:
-                  sensor.in_range:
-                    id: $source_sensor_id
-                    below: $fan_speed_1
-                then:
-                  - script.execute: fan_auto_state_off
-                else:
-                  - if:
-                      condition:
-                        sensor.in_range:
-                          id: $source_sensor_id
-                          above: $fan_speed_3
-                      then:
-                        - script.execute: fan_auto_state_3
-                      else:
-                        - if:
-                            condition:
-                              sensor.in_range:
-                                id: $source_sensor_id
-                                above: $fan_speed_2
-                            then:
-                              - script.execute: fan_auto_state_2
-                            else:
-                              - script.execute: fan_auto_state_1
-      
-      
 
 
 switch:
@@ -313,19 +303,3 @@ fan:
     output: fan_speed
     id: $fan_id
     name: "Fan"
-
-
-#----
-#    
-#switch:
-#  # Вкючить-выключить из HA не текстовой переменной, а переключателем (для голосовых команд).  
-#  - platform: template
-#    name: "AirControl Fan"
-#    id: aircontrol_fan
-#    icon: "mdi:door-open"
-#    optimistic: true
-#    restore_state: true
-#    on_turn_on:
-#      output.turn_on: relay1
-#    on_turn_off:
-#      output.turn_off: relay1

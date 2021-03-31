@@ -27,4 +27,7 @@ sensor:
       name: "Humidity"
       id: $source_sensor_id
     update_interval: 1min
+    on_value:
+      then:
+        - script.execute: fan_automation
     

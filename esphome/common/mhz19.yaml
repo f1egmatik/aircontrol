@@ -32,3 +32,6 @@ sensor:
       id: $source_sensor2_id
     update_interval: 1min
     automatic_baseline_calibration: false
+    on_value:
+      then:
+        - script.execute: fan_automation

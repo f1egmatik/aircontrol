@@ -6,9 +6,10 @@ substitutions:
   
   blow_timeout: 30min
   
-  pin_btn: D5
-  pin_relay1: D6
-  pin_relay2: D7
+  #pin_buzzer: GPIO15
+  pin_btn: GPIO14
+  pin_relay1: GPIO13
+  pin_relay2: GPIO12
   
   fan_speed_1: '50'
   fan_speed_2: '70'

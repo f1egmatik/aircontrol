@@ -7,7 +7,7 @@ substitutions:
   blow_timeout: 30min
 
   #pin_buzzer: GPIO15
-  pin_btn: GPIO4
+  pin_btn: GPIO14
   pin_relay1: GPIO13
   pin_relay2: GPIO12
 

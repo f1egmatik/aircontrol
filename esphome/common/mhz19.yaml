@@ -12,9 +12,9 @@ substitutions:
   pin_relay1: GPIO13
   pin_relay2: GPIO12
   
-  fan_speed_1: '600'
-  fan_speed_2: '1200'
-  fan_speed_3: '1800'
+  bound_1: '600'
+  bound_2: '1200'
+  bound_3: '1800'
   
   
 uart:
@@ -28,11 +28,11 @@ sensor:
     co2:
       name: "CO2 Value"
       id: $source_sensor_id
+      on_value:
+        then:
+          - script.execute: fan_automation
     temperature:
       name: "Temperature"
       id: $source_sensor2_id
     update_interval: 1min
     automatic_baseline_calibration: false
-    on_value:
-      then:
-        - script.execute: fan_automation

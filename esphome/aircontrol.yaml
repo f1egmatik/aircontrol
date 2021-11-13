@@ -123,7 +123,7 @@ script:
                 condition:
                   sensor.in_range:
                     id: $source_sensor_id
-                    below: $fan_speed_1
+                    below: $bound_1
                 then:
                   - script.execute: fan_auto_state_off
                 else:
@@ -131,7 +131,7 @@ script:
                       condition:
                         sensor.in_range:
                           id: $source_sensor_id
-                          above: $fan_speed_3
+                          above: $bound_3
                       then:
                         - script.execute: fan_auto_state_3
                       else:
@@ -139,7 +139,7 @@ script:
                             condition:
                               sensor.in_range:
                                 id: $source_sensor_id
-                                above: $fan_speed_2
+                                above: $bound_2
                             then:
                               - script.execute: fan_auto_state_2
                             else:
@@ -173,7 +173,7 @@ script:
                 then:
                   - fan.turn_on:
                       id: $fan_id
-                      speed: LOW
+                      speed: 1
 
   # Втарая скорость
   - id: fan_auto_state_2
@@ -189,7 +189,7 @@ script:
                 then:
                   - fan.turn_on:
                       id: $fan_id
-                      speed: MEDIUM
+                      speed: 2
 
   # Третья скорость
   - id: fan_auto_state_3
@@ -205,7 +205,7 @@ script:
                 then:
                   - fan.turn_on:
                       id: $fan_id
-                      speed: HIGH
+                      speed: 3
             
   # ВКЛ 30 минут
   - id: fan_manual_state_on
@@ -220,7 +220,7 @@ script:
           state: ON
       - fan.turn_on:
           id: $fan_id
-          speed: HIGH
+          speed: 3
       - script.execute: timeout
 
   # ВЫКЛ 30 минут
@@ -303,3 +303,4 @@ fan:
     output: fan_speed
     id: $fan_id
     name: "Fan"
+    speed_count: 3

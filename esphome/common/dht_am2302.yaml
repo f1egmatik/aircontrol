@@ -11,9 +11,9 @@ substitutions:
   pin_relay1: GPIO13
   pin_relay2: GPIO12
 
-  fan_speed_1: '50'
-  fan_speed_2: '70'
-  fan_speed_3: '90'
+  bound_1: '50'
+  bound_2: '70'
+  bound_3: '90'
 
 
 sensor:

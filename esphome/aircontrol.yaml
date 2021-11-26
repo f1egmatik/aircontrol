@@ -1,10 +1,7 @@
 esphome:
-  name: aircontrol2
+  name: aircontrol
   platform: ESP8266
   board: nodemcuv2
-#  on_boot:
-#    then:
-#      - switch.turn_on: autocontrol_sw
 
 wifi:
   # Учетные данные Wi-Fi
@@ -41,14 +38,6 @@ ota:
 #<<: !include common/dht_am2302.yaml
 #<<: !include common/hass_sensor.yaml
 
-# Не обязательный текстовый сенсор, отображает текущий режим работы вентилятора
-#text_sensor:
-#  - platform: template
-#    name: "Fan speed"
-#    id: fanspeed
-#    icon: "mdi:fan"
-
-
 # Настройки выходов
 output:
   # Выход Реле 1
@@ -78,33 +67,24 @@ output:
           then:
             - output.turn_off: relay_1
             - output.turn_off: relay_2
-#            - lambda: |-
-#                id(fanspeed).publish_state("0");
       - if:
           condition:
             lambda: return ((state >= .25) && (state < .50));
           then:
             - output.turn_on: relay_1
             - output.turn_off: relay_2
-#            - lambda: |-
-#                id(fanspeed).publish_state("1");
       - if:
           condition:
             lambda: return ((state >= .50) && (state < .75));
           then:
             - output.turn_off: relay_1
             - output.turn_on: relay_2
-#            - lambda: |-
-#                id(fanspeed).publish_state("2");
       - if:
           condition:
             lambda: return (state >= 0.75);
           then:
             - output.turn_on: relay_1
             - output.turn_on: relay_2
-#            - lambda: |-
-#                id(fanspeed).publish_state("3");
-
 
 # Скрипты автоматизации
 script:
@@ -114,9 +94,7 @@ script:
     then:
       - if:
           condition:
-#            and:
               not:
-#                - switch.is_off: autocontrol_sw
                 - script.is_running: timeout
           then:
             - if:
@@ -125,7 +103,6 @@ script:
                     id: $source_sensor_id
                     above: $bound_3
                 then:
-#                  - script.execute: fan_auto_state_off
                   - fan.turn_on:
                       id: $fan_id
                       speed: 3
@@ -136,7 +113,6 @@ script:
                           id: $source_sensor_id
                           above: $bound_2
                       then:
-#                        - script.execute: fan_auto_state_1
                         - fan.turn_on:
                             id: $fan_id
                             speed: 2
@@ -150,145 +126,15 @@ script:
                               - fan.turn_on:
                                   id: $fan_id
                                   speed: 1
-#                              - script.execute: fan_auto_state_2
                             else:
-#                              - script.execute: fan_auto_state_3
                               - fan.turn_off: $fan_id
             - script.stop: timeout
  
-  # Вентилятор выключен
-#  - id: fan_auto_state_off
-#    then:
-#      - if:
-#          condition:
-#            switch.is_on: autocontrol_sw
-#          then:
-#            - if:
-#                condition:
-#                  not:
-#                    - script.is_running: timeout
-#                then:
-#                  - fan.turn_off: $fan_id
-      
-  # Первая скорость
-#  - id: fan_auto_state_1
-#    then:
-#      - if:
-#          condition:
-#            switch.is_on: autocontrol_sw
-#          then:
-#            - if:
-#                condition:
-#                  not:
-#                    - script.is_running: timeout
-#                then:
-#                  - fan.turn_on:
-#                      id: $fan_id
-#                      speed: 1
-
-  # Втарая скорость
-#  - id: fan_auto_state_2
-#    then:
-#      - if:
-#          condition:
-#            switch.is_on: autocontrol_sw
-#          then:
-#            - if:
-#                condition:
-#                  not:
-#                    - script.is_running: timeout
-#                then:
-#                  - fan.turn_on:
-#                      id: $fan_id
-#                      speed: 2
-
-  # Третья скорость
-#  - id: fan_auto_state_3
-#    then:
-#      - if:
-#          condition:
-#            switch.is_on: autocontrol_sw
-#          then:
-#            - if:
-#                condition:
-#                  not:
-#                    - script.is_running: timeout
-#                then:
-#                  - fan.turn_on:
-#                      id: $fan_id
-#                      speed: 3
-            
-  # ВКЛ 30 минут
-#  - id: fan_manual_state_on
-#    then:
-#      - if:
-#          condition:
-#            - script.is_running: timeout
-#          then:
-#            - script.stop: timeout
-#      - switch.template.publish:
-#          id: autocontrol_sw
-#          state: ON
-#      - fan.turn_on:
-#          id: $fan_id
-#          speed: 3
-#      - script.execute: timeout
-
-  # ВЫКЛ 30 минут
-#  - id: fan_manual_state_off
-#    then:
-#      - if:
-#          condition:
-#            - script.is_running: timeout
-#          then:
-#            - script.stop: timeout
-#      - switch.template.publish:
-#          id: autocontrol_sw
-#          state: ON
-#      - fan.turn_off: $fan_id
-#      - script.execute: timeout
-
   # Таймер
   - id: timeout
     mode: restart
     then:
       - delay: $blow_timeout
-
-
-#switch:
-  # Переключатель ручного управления
-#  - platform: template
-#    id: autocontrol_sw
-#    name: "Autocontrol"
-#    icon: "mdi:fan-auto"
-#    turn_on_action:
-#      - switch.template.publish:
-#          id: autocontrol_sw
-#          state: ON
-#      - script.stop: timeout
-#    turn_off_action:
-#      - switch.template.publish:
-#          id: autocontrol_sw
-#          state: OFF
-          
-  # Переключатель режима продувки
-#  - platform: template
-#    id: blow
-#    name: "Blow"
-#    icon: "mdi:fan-speed-3"
-#    turn_on_action:
-#      - script.execute: fan_manual_state_on
-#      - switch.template.publish:
-#          id: blow
-#          state: ON
-      #- script.stop: timeout
-#    turn_off_action:
-#      - script.execute: fan_manual_state_off
-#      - switch.template.publish:
-#          id: blow
-#          state: OFF
-      #- script.stop: timeout
-
 
 binary_sensor:
   # Физический переключатель на вентиляторе
@@ -303,15 +149,12 @@ binary_sensor:
       delayed_on: 25ms
     on_press:
       then:
-#        - script.execute: fan_manual_state_on
         - fan.turn_on:
             id: $fan_id
             speed: 3
     on_release:
       then:
-#        - script.execute: fan_manual_state_off
         - fan.toggle: $fan_id
-
 
 #Вентилятор
 fan:
@@ -320,11 +163,6 @@ fan:
     id: $fan_id
     name: "Fan"
     speed_count: 3
-#    on_turn_on:
-#    - logger.log: "Fan Turned On!"
-#    - speed: 3
-#    on_turn_off:
-#    - logger.log: "Fan Turned Off!"
-    #- speed: 0
     on_speed_set:
     - script.execute: timeout
+

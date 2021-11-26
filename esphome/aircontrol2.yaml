@@ -1,0 +1,9 @@
+esphome:
+  name: aircontrol2
+  platform: ESP8266
+  board: nodemcuv2
+
+<<: !include aircontrol.yaml
+
+# Если у Вас более одного вентилятора в доме, то для второго и последующих можно использовать подобные файлы.
+

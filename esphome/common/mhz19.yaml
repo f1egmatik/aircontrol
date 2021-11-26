@@ -5,12 +5,12 @@ substitutions:
   source_sensor_id: mhz19_co2
   source_sensor2_id: mhz19_temp
   
-  blow_timeout: 30min
+  blow_timeout: 15 min
   
   #pin_buzzer: GPIO15
   pin_btn: GPIO14
-  pin_relay1: GPIO13
-  pin_relay2: GPIO12
+  pin_relay1: GPIO12
+  pin_relay2: GPIO13
   
   bound_1: '600'
   bound_2: '1200'

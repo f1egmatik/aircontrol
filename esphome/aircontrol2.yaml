@@ -1,3 +1,4 @@
+# Если у Вас более одного вентилятора в доме, то для второго и последующих можно использовать подобные файлы.
 esphome:
   name: aircontrol2
   platform: ESP8266
@@ -5,5 +6,50 @@ esphome:
 
 <<: !include aircontrol.yaml
 
-# Если у Вас более одного вентилятора в доме, то для второго и последующих можно использовать подобные файлы.
+# Настройки выходов для китайской релейной платы с неинвертированными выходами
+output:
+  # Выход Реле 1
+  - platform: gpio
+    id: relay_1
+    pin:
+      number: $pin_relay1
+      mode: OUTPUT
+#      inverted: true
 
+  # Выход Реле 2
+  - platform: gpio
+    id: relay_2
+    pin:
+      number: $pin_relay2
+      mode: OUTPUT
+#      inverted: true
+
+  # Фиктивный выход для переключения скоростей вентилятора
+  - platform: template
+    type: float
+    id: fan_speed
+    write_action:
+      - if:
+          condition:
+            lambda: return (state < .25);
+          then:
+            - output.turn_off: relay_1
+            - output.turn_off: relay_2
+      - if:
+          condition:
+            lambda: return ((state >= .25) && (state < .50));
+          then:
+            - output.turn_on: relay_1
+            - output.turn_off: relay_2
+      - if:
+          condition:
+            lambda: return ((state >= .50) && (state < .75));
+          then:
+            - output.turn_off: relay_1
+            - output.turn_on: relay_2
+      - if:
+          condition:
+            lambda: return (state >= 0.75);
+          then:
+            - output.turn_on: relay_1
+            - output.turn_on: relay_2

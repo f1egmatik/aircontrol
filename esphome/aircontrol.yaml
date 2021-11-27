@@ -46,7 +46,7 @@ output:
     pin:
       number: $pin_relay1
       mode: OUTPUT
-#      inverted: true
+      inverted: true
 
   # Выход Реле 2
   - platform: gpio
@@ -54,7 +54,7 @@ output:
     pin:
       number: $pin_relay2
       mode: OUTPUT
-#      inverted: true
+      inverted: true
 
   # Фиктивный выход для переключения скоростей вентилятора
   - platform: template

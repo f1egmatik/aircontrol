@@ -1,0 +1,19 @@
+#Строчки, которые надо добавить в yandex_smart_home.yaml в соответствующие разделы, чтобы добавить вентилятор в умный дом Яндекса
+
+  filter:
+    include_domains:
+
+      - fan
+
+  entity_config:
+
+    fan.fan:
+      name: Вентилятор
+      room: Ванная
+      type: devices.types.purifier 
+      properties:
+        - type: co2_level
+          entity: sensor.co2_value
+        - type: temperature
+          entity: sensor.temperature
+

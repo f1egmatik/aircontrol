@@ -1,10 +1,16 @@
 # Если у Вас более одного вентилятора в доме, то для второго и последующих можно использовать подобные файлы.
 esphome:
   name: aircontrol2
-  platform: ESP8266
+esp8266:  
   board: nodemcuv2
 
 <<: !include aircontrol.yaml
+
+# Включение Home Assistant API
+api:
+#  password: "esphome"
+  encryption:
+    key: "ZSg15IefssE1vFdISZEtIO/hnR+kEm82yiuDKUGwFT1="
 
 # Настройки выходов для китайской релейной платы с неинвертированными выходами
 output:

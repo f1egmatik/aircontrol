@@ -61,7 +61,7 @@ output:
       mode: OUTPUT
       inverted: true
 
-  # Фиктивный выход для переключения скоростей вентилятора
+  # переключатель скоростей вентилятора
   - platform: template
     type: float
     id: fan_speed
@@ -133,9 +133,10 @@ script:
                                   speed: 1
                             else:
                               - fan.turn_off: $fan_id
-            - script.stop: timeout
+            # останавливаем таймер, запущенный на предыдущем шаге из-за переключения скорости, т.к. это переключение было не ручным, а по датчику
+            - script.stop: timeout 
  
-  # Таймер
+  # Таймер — блокируем автоматические (по датчику) переключения вентилятора на какое-то время
   - id: timeout
     mode: restart
     then:
@@ -151,15 +152,17 @@ binary_sensor:
       mode: INPUT_PULLUP
       inverted: True
     filters:
-      delayed_on: 25ms
+      delayed_on: 250 ms
     on_press:
       then:
         - fan.turn_on:
             id: $fan_id
             speed: 3
+        - script.execute: timeout # запускаем принудительно, т.к. скрипт блокировки не запускается, если до этого уже была такая же скорость
     on_release:
       then:
         - fan.toggle: $fan_id
+        - script.execute: timeout # запускаем принудительно, т.к. скрипт блокировки не запускается, если до этого уже была такая же скорость
 
 #Вентилятор
 fan:
@@ -169,5 +172,6 @@ fan:
     name: "Fan"
     speed_count: 3
     on_speed_set:
-    - script.execute: timeout
+    - script.execute: timeout # запускаем блокировку датчико-зависимого переключения скоростей после ручного переключения 
+
 
